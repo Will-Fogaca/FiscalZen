@@ -1,0 +1,88 @@
+﻿using FiscalZen.Domain.Common.Exceptions;
+using FiscalZen.Domain.FiscalDocuments.ValueObjects;
+
+namespace FiscalZen.Domain.FiscalDocuments.Entities;
+
+public abstract class FiscalDocument
+{
+    public AccessKey AccessKey { get; }
+
+    public int Number { get; }
+
+    public int Series { get; }
+
+    public DateTime IssueDate { get; }
+
+    public Money ProductsAmount { get; private set; }
+
+    public Money FreightAmount { get; private set; }
+
+    public Money DiscountAmount { get; private set; }
+
+    public Money TotalAmount { get; private set; }
+
+
+    protected FiscalDocument(AccessKey accessKey, int number, int series, DateTime issueDate)
+    {
+        if (number <= 0)
+            throw new DomainException("O número do documento fiscal deve ser maior que zero.");
+
+        if (series < 0)
+            throw new DomainException("A série do documento fiscal não pode ser menor que zero.");
+
+        AccessKey = accessKey ?? throw new DomainException("A chave de acesso não foi informada.");
+
+        Number = number;
+        Series = series;
+        IssueDate = issueDate;
+
+        ProductsAmount = Money.Zero;
+        FreightAmount = Money.Zero;
+        DiscountAmount = Money.Zero;
+        TotalAmount = Money.Zero;
+    }
+
+    public void SetProductsAmount(Money amount)
+    {
+        EnsureNonNegative(amount, "O valor dos produtos");
+
+        ProductsAmount = amount;
+
+        RecalculateTotal();
+    }
+
+    public void SetFreightAmount(Money amount)
+    {
+        EnsureNonNegative(amount, "O valor do frete");
+
+        FreightAmount = amount;
+
+        RecalculateTotal();
+    }
+
+    public void SetDiscountAmount(Money amount)
+    {
+        EnsureNonNegative(amount, "O valor do desconto");
+
+        if (amount > ProductsAmount + FreightAmount)
+            throw new DomainException("O valor do desconto não pode ser maior que o valor do documento fiscal.");
+
+        DiscountAmount = amount;
+
+        RecalculateTotal();
+    }
+
+    protected void RecalculateTotal()
+    {
+        TotalAmount = ProductsAmount + FreightAmount - DiscountAmount;
+    }
+
+    private static void EnsureNonNegative(Money amount, string field)
+    {
+        if (amount is null)
+            throw new DomainException($"{field} não foi informado.");
+
+        if (amount.Value < 0)
+            throw new DomainException($"{field} não pode ser menor que zero.");
+    }
+}
