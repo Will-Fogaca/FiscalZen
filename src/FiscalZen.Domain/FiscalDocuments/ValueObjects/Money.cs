@@ -1,4 +1,4 @@
-﻿using FiscalZen.Domain.Exceptions;
+﻿using FiscalZen.Domain.Common.Exceptions;
 
 namespace FiscalZen.Domain.FiscalDocuments.ValueObjects;
 

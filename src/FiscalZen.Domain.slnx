@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/docs/">
+    <File Path="../docs/architecture.md" />
+    <File Path="../docs/domain.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="FiscalZen.Domain/FiscalZen.Domain.csproj" />
+  </Folder>
+</Solution>
