@@ -1,4 +1,5 @@
 ﻿using FiscalZen.Domain.Common.Exceptions;
+using FiscalZen.Domain.FiscalDocuments.Enums;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
 namespace FiscalZen.Domain.FiscalDocuments.Entities;
@@ -23,6 +24,8 @@ public abstract class FiscalDocument
 
     public Money TotalAmount { get; private set; }
 
+    public TaxSummary Taxes { get; private set;  }
+
     public IReadOnlyCollection<FiscalDocumentItem> Items => _items;
 
     protected FiscalDocument(AccessKey accessKey, int number, int series, DateTime issueDate)
@@ -41,6 +44,7 @@ public abstract class FiscalDocument
         FreightAmount = Money.Zero;
         DiscountAmount = Money.Zero;
         TotalAmount = Money.Zero;
+        Taxes = new TaxSummary();
     }
 
     public void AddItem(FiscalDocumentItem item)
@@ -96,5 +100,10 @@ public abstract class FiscalDocument
 
         if (amount.Value < 0)
             throw new DomainException($"{field} não pode ser menor que zero.");
+    }
+
+    public void SetTaxes(TaxSummary taxes)
+    {
+        Taxes = taxes ?? throw new DomainException("Os tributos do documento fiscal não foram informados.");
     }
 }

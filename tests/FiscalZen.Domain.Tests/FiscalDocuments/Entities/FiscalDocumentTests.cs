@@ -197,7 +197,15 @@ public class FiscalDocumentTests
 
     private static FiscalDocumentItem CreateItem(int number)
     {
-        return new FiscalDocumentItem(number, "PROD001", "Produto teste", "12345678", "5102", 1, new Money(100), new Money(100));
+        return new FiscalDocumentItem(
+            number,
+            "PROD001",
+            "Produto teste",
+            "12345678",
+            new CFOP("5102"),
+            1,
+            new Money(100),
+            new Money(100));
     }
 
     private sealed class TestFiscalDocument : FiscalDocument

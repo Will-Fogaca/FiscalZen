@@ -6,5 +6,7 @@
   <Folder Name="/src/">
     <Project Path="FiscalZen.Domain/FiscalZen.Domain.csproj" />
   </Folder>
-  <Project Path="../tests/FiscalZen.Domain.Tests/FiscalZen.Domain.Tests.csproj" Id="3d6cd4fd-1956-413d-bd6b-d74fb11f0a3b" />
+  <Folder Name="/tests/">
+    <Project Path="../tests/FiscalZen.Domain.Tests/FiscalZen.Domain.Tests.csproj" Id="3d6cd4fd-1956-413d-bd6b-d74fb11f0a3b" />
+  </Folder>
 </Solution>
