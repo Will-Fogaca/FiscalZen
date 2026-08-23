@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="FiscalDocuments\Entities\FiscalDocument.cs~RFa3c889ee.TMP" />
+  </ItemGroup>
+
 </Project>

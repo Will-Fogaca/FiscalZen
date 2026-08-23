@@ -12,7 +12,6 @@ namespace FiscalZen.Domain.FiscalDocuments.Entities
 
         public AccessKey ReferencedAccessKey { get; }
 
-
         public ReturnNFe(AccessKey accessKey, AccessKey referencedAccessKey, int number, int series, DateTime issueDate): base(accessKey, number, series, issueDate)
         {
             ReferencedAccessKey = referencedAccessKey;

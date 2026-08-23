@@ -5,6 +5,8 @@ namespace FiscalZen.Domain.FiscalDocuments.Entities;
 
 public abstract class FiscalDocument
 {
+    private readonly List<FiscalDocumentItem> _items = [];
+
     public AccessKey AccessKey { get; }
 
     public int Number { get; }
@@ -21,6 +23,7 @@ public abstract class FiscalDocument
 
     public Money TotalAmount { get; private set; }
 
+    public IReadOnlyCollection<FiscalDocumentItem> Items => _items;
 
     protected FiscalDocument(AccessKey accessKey, int number, int series, DateTime issueDate)
     {
@@ -31,15 +34,24 @@ public abstract class FiscalDocument
             throw new DomainException("A série do documento fiscal não pode ser menor que zero.");
 
         AccessKey = accessKey ?? throw new DomainException("A chave de acesso não foi informada.");
-
         Number = number;
         Series = series;
         IssueDate = issueDate;
-
         ProductsAmount = Money.Zero;
         FreightAmount = Money.Zero;
         DiscountAmount = Money.Zero;
         TotalAmount = Money.Zero;
+    }
+
+    public void AddItem(FiscalDocumentItem item)
+    {
+        if (item is null)
+            throw new DomainException("O item do documento fiscal não foi informado.");
+
+        if (_items.Any(x => x.Number == item.Number))
+            throw new DomainException($"Já existe um item com o número {item.Number} no documento fiscal.");
+
+        _items.Add(item);
     }
 
     public void SetProductsAmount(Money amount)
