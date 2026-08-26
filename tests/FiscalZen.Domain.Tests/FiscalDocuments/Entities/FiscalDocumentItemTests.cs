@@ -3,7 +3,7 @@ using FiscalZen.Domain.FiscalDocuments.Entities;
 using FiscalZen.Domain.FiscalDocuments.Enums;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
-namespace FiscalZen.Domain.Tests;
+namespace FiscalZen.Domain.Tests.FiscalDocuments.Entities;
 
 public class FiscalDocumentItemTests
 {

@@ -1,5 +1,4 @@
 ﻿using FiscalZen.Domain.Common.Exceptions;
-using FiscalZen.Domain.FiscalDocuments.Enums;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
 namespace FiscalZen.Domain.FiscalDocuments.Entities;

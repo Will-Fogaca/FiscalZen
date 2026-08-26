@@ -1,7 +1,7 @@
 ﻿using FiscalZen.Domain.Common.Exceptions;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
-namespace FiscalZen.Domain.Tests;
+namespace FiscalZen.Domain.Tests.FiscalDocuments.ValueObjects;
 
 public class CFOPTests
 {

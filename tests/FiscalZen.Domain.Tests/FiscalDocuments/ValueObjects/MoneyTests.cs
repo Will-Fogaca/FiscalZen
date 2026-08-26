@@ -1,6 +1,6 @@
 ﻿using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
-namespace FiscalZen.Domain.Tests;
+namespace FiscalZen.Domain.Tests.FiscalDocuments.ValueObjects;
 
 public class MoneyTests
 {

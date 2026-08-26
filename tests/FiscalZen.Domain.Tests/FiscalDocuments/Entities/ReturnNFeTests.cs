@@ -2,7 +2,7 @@
 using FiscalZen.Domain.FiscalDocuments.Entities;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
-namespace FiscalZen.Domain.Tests;
+namespace FiscalZen.Domain.Tests.FiscalDocuments.Entities;
 
 public class ReturnNFeTests
 {
