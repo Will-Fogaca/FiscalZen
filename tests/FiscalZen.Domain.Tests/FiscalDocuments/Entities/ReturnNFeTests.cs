@@ -14,7 +14,7 @@ public class ReturnNFeTests
 
         var referencedAccessKey = CreateReferencedAccessKey();
 
-        var nfe = new ReturnNFe(
+        var nfe = new ReturnNfe(
             accessKey,
             referencedAccessKey,
             123,
@@ -34,7 +34,7 @@ public class ReturnNFeTests
     {
         var referencedAccessKey = CreateReferencedAccessKey();
 
-        var exception = Assert.Throws<DomainException>(() => new ReturnNFe(null!, referencedAccessKey, 123, 1, DateTime.Now, TaxRegime.LucroReal));
+        var exception = Assert.Throws<DomainException>(() => new ReturnNfe(null!, referencedAccessKey, 123, 1, DateTime.Now, TaxRegime.LucroReal));
 
         Assert.That(exception!.Message, Is.EqualTo("A chave de acesso não foi informada."));
     }
@@ -44,7 +44,7 @@ public class ReturnNFeTests
     {
         var accessKey = CreateAccessKey();
 
-        var exception = Assert.Throws<DomainException>(() => new ReturnNFe(accessKey, null!, 123, 1, DateTime.Now, TaxRegime.LucroReal));
+        var exception = Assert.Throws<DomainException>(() => new ReturnNfe(accessKey, null!, 123, 1, DateTime.Now, TaxRegime.LucroReal));
 
         Assert.That(exception!.Message, Is.EqualTo("A chave de acesso do documento fiscal referenciado não foi informada."));
     }

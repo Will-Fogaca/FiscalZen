@@ -18,7 +18,7 @@ public class FiscalDocumentItemTests
             Assert.That(item.ProductCode, Is.EqualTo("PROD001"));
             Assert.That(item.Description, Is.EqualTo("Produto teste"));
             Assert.That(item.NCM, Is.EqualTo("12345678"));
-            Assert.That(item.CFOP.Value, Is.EqualTo("5102"));
+            Assert.That(item.Cfop.Value, Is.EqualTo("5102"));
             Assert.That(item.Quantity, Is.EqualTo(2));
             Assert.That(item.UnitPrice.Value, Is.EqualTo(50));
             Assert.That(item.TotalAmount.Value, Is.EqualTo(100));
@@ -34,7 +34,7 @@ public class FiscalDocumentItemTests
                 "PROD001",
                 "Produto teste",
                 "12345678",
-                new CFOP("5102"),
+                new Cfop("5102"),
                 2,
                 new Money(50),
                 new Money(100)));
@@ -51,7 +51,7 @@ public class FiscalDocumentItemTests
                 "",
                 "Produto teste",
                 "12345678",
-                new CFOP("5102"),
+                new Cfop("5102"),
                 2,
                 new Money(50),
                 new Money(100)));
@@ -68,7 +68,7 @@ public class FiscalDocumentItemTests
                 "PROD001",
                 "",
                 "12345678",
-                new CFOP("5102"),
+                new Cfop("5102"),
                 2,
                 new Money(50),
                 new Money(100)));
@@ -102,7 +102,7 @@ public class FiscalDocumentItemTests
                 "PROD001",
                 "Produto teste",
                 "12345678",
-                new CFOP("5102"),
+                new Cfop("5102"),
                 0,
                 new Money(50),
                 new Money(100)));
@@ -119,7 +119,7 @@ public class FiscalDocumentItemTests
                 "PROD001",
                 "Produto teste",
                 "12345678",
-                new CFOP("5102"),
+                new Cfop("5102"),
                 2,
                 null!,
                 new Money(100)));
@@ -136,7 +136,7 @@ public class FiscalDocumentItemTests
                 "PROD001",
                 "Produto teste",
                 "12345678",
-                new CFOP("5102"),
+                new Cfop("5102"),
                 2,
                 new Money(50),
                 null!));
@@ -197,7 +197,7 @@ public class FiscalDocumentItemTests
             "PROD001",
             "Produto teste",
             "12345678",
-            new CFOP("5102"),
+            new Cfop("5102"),
             2,
             new Money(50),
             new Money(100));

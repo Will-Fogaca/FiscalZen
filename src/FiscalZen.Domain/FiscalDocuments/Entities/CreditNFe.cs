@@ -6,13 +6,13 @@ using System.Text;
 
 namespace FiscalZen.Domain.FiscalDocuments.Entities
 {
-    public sealed class CreditNFe : NFe
+    public sealed class CreditNfe : Nfe
     {
-        public override NFePurpose Purpose => NFePurpose.Credit;
+        public override NfePurpose Purpose => NfePurpose.Credit;
 
-        public NFeCreditType CreditType { get; }
+        public NfeCreditType CreditType { get; }
 
-        public CreditNFe(AccessKey accessKey, int number, int series, DateTime issueDate, NFeCreditType creditType, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime)
+        public CreditNfe(AccessKey accessKey, int number, int series, DateTime issueDate, NfeCreditType creditType, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime)
         {
             CreditType = creditType;
         }

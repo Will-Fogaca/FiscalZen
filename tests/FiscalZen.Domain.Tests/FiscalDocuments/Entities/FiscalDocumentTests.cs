@@ -203,7 +203,7 @@ public class FiscalDocumentTests
             "PROD001",
             "Produto teste",
             "12345678",
-            new CFOP("5102"),
+            new Cfop("5102"),
             1,
             new Money(100),
             new Money(100));

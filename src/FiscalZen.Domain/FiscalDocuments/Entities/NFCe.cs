@@ -6,8 +6,8 @@ using System.Text;
 
 namespace FiscalZen.Domain.FiscalDocuments.Entities
 {
-    public sealed class NFCe : FiscalDocument
+    public sealed class Nfce : FiscalDocument
     {
-        public NFCe(AccessKey accessKey, int number, int series, DateTime issueDate, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime) { }
+        public Nfce(AccessKey accessKey, int number, int series, DateTime issueDate, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime) { }
     }
 }

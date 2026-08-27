@@ -6,13 +6,13 @@ using System.Text;
 
 namespace FiscalZen.Domain.FiscalDocuments.Entities
 {
-    public sealed class DebitNFe : NFe
+    public sealed class DebitNfe : Nfe
     {
-        public override NFePurpose Purpose => NFePurpose.Debit;
+        public override NfePurpose Purpose => NfePurpose.Debit;
 
-        public NFeDebitType DebitType { get; }
+        public NfeDebitType DebitType { get; }
 
-        public DebitNFe(AccessKey accessKey, int number, int series, DateTime issueDate, NFeDebitType debitType, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime)
+        public DebitNfe(AccessKey accessKey, int number, int series, DateTime issueDate, NfeDebitType debitType, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime)
         {
             DebitType = debitType;
         }

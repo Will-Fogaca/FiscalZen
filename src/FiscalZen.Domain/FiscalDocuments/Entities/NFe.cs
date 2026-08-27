@@ -6,10 +6,10 @@ using System.Text;
 
 namespace FiscalZen.Domain.FiscalDocuments.Entities
 {
-    public abstract class NFe : FiscalDocument
+    public abstract class Nfe : FiscalDocument
     {
-       protected NFe(AccessKey accessKey, int number, int series, DateTime issueDate, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime){ }
+       protected Nfe(AccessKey accessKey, int number, int series, DateTime issueDate, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime){ }
 
-       public abstract NFePurpose Purpose { get; }
+       public abstract NfePurpose Purpose { get; }
     }
 }

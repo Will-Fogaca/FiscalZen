@@ -7,11 +7,11 @@ using System.Text;
 
 namespace FiscalZen.Domain.FiscalDocuments.ValueObjects
 {
-    public sealed record CFOP
+    public sealed record Cfop
     {
         public string Value { get; }
 
-        public CFOP(string value)
+        public Cfop(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

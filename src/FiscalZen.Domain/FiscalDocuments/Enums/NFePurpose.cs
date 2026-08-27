@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FiscalZen.Domain.FiscalDocuments.Enums
 {
-    public enum NFePurpose
+    public enum NfePurpose
     {
         Normal = 1,
         Complementary = 2,

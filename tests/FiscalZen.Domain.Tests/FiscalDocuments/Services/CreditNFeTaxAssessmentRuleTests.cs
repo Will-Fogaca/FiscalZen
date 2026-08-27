@@ -14,7 +14,7 @@ public class CreditNFeTaxAssessmentRuleTests
     {
         var nfe = CreateCreditNFe();
 
-        var rule = new CreditNFeTaxAssessmentRule();
+        var rule = new CreditNfeTaxAssessmentRule();
         
         var result = rule.CanHandle(nfe);
 
@@ -26,7 +26,7 @@ public class CreditNFeTaxAssessmentRuleTests
     {
         var nfe = CreateCreditNFe();
 
-        var rule = new CreditNFeTaxAssessmentRule();
+        var rule = new CreditNfeTaxAssessmentRule();
 
         Assert.Throws<NotImplementedException>(() => rule.Assess(nfe));
     }
@@ -36,7 +36,7 @@ public class CreditNFeTaxAssessmentRuleTests
     {
         var nfe = CreateNormalNFe();
 
-        var rule = new CreditNFeTaxAssessmentRule();
+        var rule = new CreditNfeTaxAssessmentRule();
 
         var result = rule.CanHandle(nfe);
 
@@ -44,21 +44,21 @@ public class CreditNFeTaxAssessmentRuleTests
     }
 
 
-    private static CreditNFe CreateCreditNFe()
+    private static CreditNfe CreateCreditNFe()
     {
-        return new CreditNFe(
+        return new CreditNfe(
             new AccessKey("35260812345678000190550010000012341000012345"),
             124,
             1,
             new DateTime(2026, 8, 25),
-            NFeCreditType.ValueReduction,
+            NfeCreditType.ValueReduction,
             TaxRegime.LucroReal
         );
     }
 
-    private static NormalNFe CreateNormalNFe()
+    private static NormalNfe CreateNormalNFe()
     {
-        return new NormalNFe(
+        return new NormalNfe(
             new AccessKey("35260812345678000190550010000012341000012345"),
             124,
             1,

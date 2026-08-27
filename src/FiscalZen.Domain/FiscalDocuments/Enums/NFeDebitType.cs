@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FiscalZen.Domain.FiscalDocuments.Enums
 {
-    public enum NFeDebitType
+    public enum NfeDebitType
     {
         CreditTransferToCooperatives = 1,
 

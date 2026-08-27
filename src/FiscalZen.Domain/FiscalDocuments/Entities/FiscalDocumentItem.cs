@@ -13,7 +13,7 @@ public sealed class FiscalDocumentItem
 
     public string? NCM { get; }
 
-    public CFOP CFOP { get; }
+    public Cfop Cfop { get; }
 
     public decimal Quantity { get; }
 
@@ -23,7 +23,7 @@ public sealed class FiscalDocumentItem
 
     public TaxSummary Taxes { get; private set; }
 
-    public FiscalDocumentItem(int number, string productCode, string description, string? ncm, CFOP cfop, decimal quantity, Money unitPrice, Money totalAmount)
+    public FiscalDocumentItem(int number, string productCode, string description, string? ncm, Cfop cfop, decimal quantity, Money unitPrice, Money totalAmount)
     {
         if (number <= 0)
             throw new DomainException("O número do item deve ser maior que zero.");
@@ -41,7 +41,7 @@ public sealed class FiscalDocumentItem
 
         TotalAmount = totalAmount ?? throw new DomainException("O valor total do item não foi informado.");
 
-        CFOP = cfop ?? throw new DomainException("O CFOP não foi informado.");
+        Cfop = cfop ?? throw new DomainException("O CFOP não foi informado.");
 
         Number = number;
         ProductCode = productCode;

@@ -4,9 +4,12 @@
     <File Path="../docs/domain.md" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="FiscalZen.Application/FiscalZen.Application.csproj" Id="201163a2-c4d4-478e-b04a-ede01d3944b8" />
     <Project Path="FiscalZen.Domain/FiscalZen.Domain.csproj" />
+    <Project Path="FiscalZen.Infrastructure/FiscalZen.Infrastructure.csproj" Id="a6d5722d-862e-4569-89be-f13a7c2b868d" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="../tests/FiscalZen.Domain.Tests/FiscalZen.Domain.Tests.csproj" Id="3d6cd4fd-1956-413d-bd6b-d74fb11f0a3b" />
+    <Project Path="../tests/FiscalZen.Infrastructure.Tests/FiscalZen.Infrastructure.Tests.csproj" Id="3a0641bb-8b83-4554-a2ca-4acc683770f9" />
   </Folder>
 </Solution>

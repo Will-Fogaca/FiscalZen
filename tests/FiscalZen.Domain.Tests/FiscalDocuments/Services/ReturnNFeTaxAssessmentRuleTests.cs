@@ -28,7 +28,7 @@ public class ReturnNFeTaxAssessmentRuleTests
         });
 
         // Crio uma instância das regras de apuração de uma NFe de devolução
-        var rule = new ReturnNFeTaxAssessmentRule();
+        var rule = new ReturnNfeTaxAssessmentRule();
 
         // Defino o resultado do método que estou testando (Retorna um TaxSummary com os tributos somados na apuração)
         var result = rule.Assess(nfe);
@@ -52,7 +52,7 @@ public class ReturnNFeTaxAssessmentRuleTests
     {
         var nfe = CreateReturnNFe();
 
-        var rule = new ReturnNFeTaxAssessmentRule();
+        var rule = new ReturnNfeTaxAssessmentRule();
 
         var result = rule.CanHandle(nfe);
 
@@ -60,9 +60,9 @@ public class ReturnNFeTaxAssessmentRuleTests
     }
             
 
-    private static ReturnNFe CreateReturnNFe()
+    private static ReturnNfe CreateReturnNFe()
     {
-        return new ReturnNFe(
+        return new ReturnNfe(
             new AccessKey("35260812345678000190550010000012341000012345"),
             new AccessKey("35260812345678000190550010000056781000056789"),
             124,

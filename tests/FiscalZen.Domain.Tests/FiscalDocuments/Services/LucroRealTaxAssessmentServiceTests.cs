@@ -36,8 +36,8 @@ public class LucroRealTaxAssessmentServiceTests
 
         var rules = new IFiscalDocumentTaxAssessmentRule[]
         {
-            new NormalNFeTaxAssessmentRule(),
-            new ReturnNFeTaxAssessmentRule()
+            new NormalNfeTaxAssessmentRule(),
+            new ReturnNfeTaxAssessmentRule()
         };
 
         var service = new LucroRealTaxAssessmentService(rules);
@@ -80,8 +80,8 @@ public class LucroRealTaxAssessmentServiceTests
 
         var rules = new IFiscalDocumentTaxAssessmentRule[]
         {
-            new NormalNFeTaxAssessmentRule(),
-            new ReturnNFeTaxAssessmentRule()
+            new NormalNfeTaxAssessmentRule(),
+            new ReturnNfeTaxAssessmentRule()
         };
 
         var service = new LucroRealTaxAssessmentService(rules);
@@ -104,7 +104,7 @@ public class LucroRealTaxAssessmentServiceTests
     {
         var rules = new IFiscalDocumentTaxAssessmentRule[]
         {
-            new NormalNFeTaxAssessmentRule()
+            new NormalNfeTaxAssessmentRule()
         };
 
         var service = new LucroRealTaxAssessmentService(rules);
@@ -133,12 +133,12 @@ public class LucroRealTaxAssessmentServiceTests
     {
         var rules = new IFiscalDocumentTaxAssessmentRule[]
         {
-        new NormalNFeTaxAssessmentRule()
+        new NormalNfeTaxAssessmentRule()
         };
 
         var service = new LucroRealTaxAssessmentService(rules);
 
-        var nfe = new NormalNFe(
+        var nfe = new NormalNfe(
             new AccessKey("35260812345678000190550010000012341000012345"),
             123,
             1,
@@ -151,9 +151,9 @@ public class LucroRealTaxAssessmentServiceTests
 
 
 
-    private static NormalNFe CreateNormalNFe(int number)
+    private static NormalNfe CreateNormalNFe(int number)
     {
-        return new NormalNFe(
+        return new NormalNfe(
             new AccessKey("35260812345678000190550010000012341000012345"),
             number,
             1,
@@ -161,9 +161,9 @@ public class LucroRealTaxAssessmentServiceTests
             TaxRegime.LucroReal);
     }
 
-    private static ReturnNFe CreateReturnNFe()
+    private static ReturnNfe CreateReturnNFe()
     {
-        return new ReturnNFe(
+        return new ReturnNfe(
             new AccessKey("35260812345678000190550010000012341000012345"),
             new AccessKey("35260812345678000190550010000056781000056789"),
             125,

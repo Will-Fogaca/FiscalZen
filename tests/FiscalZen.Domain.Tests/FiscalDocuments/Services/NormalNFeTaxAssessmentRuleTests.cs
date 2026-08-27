@@ -23,7 +23,7 @@ public class NormalNFeTaxAssessmentRuleTests
             CBS = new Money(60)
         });
 
-        var rule = new NormalNFeTaxAssessmentRule();
+        var rule = new NormalNfeTaxAssessmentRule();
 
         var result = rule.Assess(nfe);
 
@@ -41,7 +41,7 @@ public class NormalNFeTaxAssessmentRuleTests
     [Test(Description = "Deve identificar que a regra atende uma NF-e normal")]
     public void Should_Handle_Normal_NFe()
     {
-        var rule = new NormalNFeTaxAssessmentRule();
+        var rule = new NormalNfeTaxAssessmentRule();
 
         var result = rule.CanHandle(CreateNormalNFe());
 
@@ -51,16 +51,16 @@ public class NormalNFeTaxAssessmentRuleTests
     [Test(Description = "Não deve identificar NF-e de devolução como NF-e normal")]
     public void Should_Not_Handle_Return_NFe()
     {
-        var rule = new NormalNFeTaxAssessmentRule();
+        var rule = new NormalNfeTaxAssessmentRule();
 
         var result = rule.CanHandle(CreateReturnNFe());
 
         Assert.That(result, Is.False);
     }
 
-    private static NormalNFe CreateNormalNFe()
+    private static NormalNfe CreateNormalNFe()
     {
-        return new NormalNFe(
+        return new NormalNfe(
             new AccessKey("35260812345678000190550010000012341000012345"),
             123,
             1,
@@ -69,9 +69,9 @@ public class NormalNFeTaxAssessmentRuleTests
         );
     }
 
-    private static ReturnNFe CreateReturnNFe()
+    private static ReturnNfe CreateReturnNFe()
     {
-        return new ReturnNFe(
+        return new ReturnNfe(
             new AccessKey("35260812345678000190550010000012341000012345"),
             new AccessKey("35260812345678000190550010000056781000056789"),
             124,

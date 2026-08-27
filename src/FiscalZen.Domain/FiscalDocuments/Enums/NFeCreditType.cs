@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FiscalZen.Domain.FiscalDocuments.Enums
 {
-    public enum NFeCreditType
+    public enum NfeCreditType
     {
         PenaltyAndInterest = 1,
 

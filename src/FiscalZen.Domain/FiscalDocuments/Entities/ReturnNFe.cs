@@ -7,13 +7,13 @@ using System.Text;
 
 namespace FiscalZen.Domain.FiscalDocuments.Entities
 {
-    public sealed class ReturnNFe : NFe
+    public sealed class ReturnNfe : Nfe
     {
-        public override NFePurpose Purpose => NFePurpose.Return;
+        public override NfePurpose Purpose => NfePurpose.Return;
 
         public AccessKey ReferencedAccessKey { get; }
 
-        public ReturnNFe(AccessKey accessKey, AccessKey referencedAccessKey, int number, int series, DateTime issueDate, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime)
+        public ReturnNfe(AccessKey accessKey, AccessKey referencedAccessKey, int number, int series, DateTime issueDate, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime)
         {
             ReferencedAccessKey = referencedAccessKey ?? throw new DomainException("A chave de acesso do documento fiscal referenciado não foi informada.");
         }
