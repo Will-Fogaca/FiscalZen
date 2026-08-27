@@ -1,5 +1,6 @@
 ﻿using FiscalZen.Domain.Common.Exceptions;
 using FiscalZen.Domain.FiscalDocuments.Entities;
+using FiscalZen.Domain.FiscalDocuments.Enums;
 using FiscalZen.Domain.FiscalDocuments.Services.TaxAssessment;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
@@ -127,13 +128,37 @@ public class LucroRealTaxAssessmentServiceTests
         Assert.That(exception!.Message, Does.Contain("Não existe uma regra de apuração"));
     }
 
+    [Test(Description = "Não deve permitir apuração de documentos que não pertençam ao Lucro Real")]
+    public void Should_Throw_When_Document_Does_Not_Belong_To_Lucro_Real()
+    {
+        var rules = new IFiscalDocumentTaxAssessmentRule[]
+        {
+        new NormalNFeTaxAssessmentRule()
+        };
+
+        var service = new LucroRealTaxAssessmentService(rules);
+
+        var nfe = new NormalNFe(
+            new AccessKey("35260812345678000190550010000012341000012345"),
+            123,
+            1,
+            new DateTime(2026, 8, 26),
+            TaxRegime.LucroPresumido);
+
+        Assert.Throws<DomainException>(() =>
+            service.Assess(new FiscalDocument[] { nfe }));
+    }
+
+
+
     private static NormalNFe CreateNormalNFe(int number)
     {
         return new NormalNFe(
             new AccessKey("35260812345678000190550010000012341000012345"),
             number,
             1,
-            new DateTime(2026, 8, 25));
+            new DateTime(2026, 8, 25), 
+            TaxRegime.LucroReal);
     }
 
     private static ReturnNFe CreateReturnNFe()
@@ -143,6 +168,7 @@ public class LucroRealTaxAssessmentServiceTests
             new AccessKey("35260812345678000190550010000056781000056789"),
             125,
             1,
-            new DateTime(2026, 8, 25));
+            new DateTime(2026, 8, 25),
+            TaxRegime.LucroReal);
     }
 }

@@ -12,7 +12,7 @@ namespace FiscalZen.Domain.FiscalDocuments.Entities
 
         public NFeCreditType CreditType { get; }
 
-        public CreditNFe(AccessKey accessKey, int number, int series, DateTime issueDate, NFeCreditType creditType): base(accessKey, number, series, issueDate)
+        public CreditNFe(AccessKey accessKey, int number, int series, DateTime issueDate, NFeCreditType creditType, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime)
         {
             CreditType = creditType;
         }

@@ -1,5 +1,6 @@
 ﻿using FiscalZen.Domain.Common.Exceptions;
 using FiscalZen.Domain.FiscalDocuments.Entities;
+using FiscalZen.Domain.FiscalDocuments.Enums;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
 namespace FiscalZen.Domain.Tests.FiscalDocuments.Entities;
@@ -18,7 +19,8 @@ public class ReturnNFeTests
             referencedAccessKey,
             123,
             1,
-            new DateTime(2026, 8, 23));
+            new DateTime(2026, 8, 23), 
+            TaxRegime.LucroReal);
 
         Assert.Multiple(() =>
         {
@@ -32,13 +34,7 @@ public class ReturnNFeTests
     {
         var referencedAccessKey = CreateReferencedAccessKey();
 
-        var exception = Assert.Throws<DomainException>(() =>
-            new ReturnNFe(
-                null!,
-                referencedAccessKey,
-                123,
-                1,
-                DateTime.Now));
+        var exception = Assert.Throws<DomainException>(() => new ReturnNFe(null!, referencedAccessKey, 123, 1, DateTime.Now, TaxRegime.LucroReal));
 
         Assert.That(exception!.Message, Is.EqualTo("A chave de acesso não foi informada."));
     }
@@ -48,13 +44,7 @@ public class ReturnNFeTests
     {
         var accessKey = CreateAccessKey();
 
-        var exception = Assert.Throws<DomainException>(() =>
-            new ReturnNFe(
-                accessKey,
-                null!,
-                123,
-                1,
-                DateTime.Now));
+        var exception = Assert.Throws<DomainException>(() => new ReturnNFe(accessKey, null!, 123, 1, DateTime.Now, TaxRegime.LucroReal));
 
         Assert.That(exception!.Message, Is.EqualTo("A chave de acesso do documento fiscal referenciado não foi informada."));
     }

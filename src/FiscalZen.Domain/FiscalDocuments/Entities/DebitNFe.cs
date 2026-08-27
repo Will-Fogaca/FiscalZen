@@ -12,7 +12,7 @@ namespace FiscalZen.Domain.FiscalDocuments.Entities
 
         public NFeDebitType DebitType { get; }
 
-        public DebitNFe(AccessKey accessKey, int number, int series, DateTime issueDate, NFeDebitType debitType) : base(accessKey, number, series, issueDate)
+        public DebitNFe(AccessKey accessKey, int number, int series, DateTime issueDate, NFeDebitType debitType, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime)
         {
             DebitType = debitType;
         }

@@ -1,4 +1,5 @@
 ﻿using FiscalZen.Domain.Common.Exceptions;
+using FiscalZen.Domain.FiscalDocuments.Enums;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
 namespace FiscalZen.Domain.FiscalDocuments.Entities;
@@ -23,11 +24,13 @@ public abstract class FiscalDocument
 
     public Money TotalAmount { get; private set; }
 
+    public TaxRegime TaxRegime { get; private set; }
+
     public TaxSummary Taxes { get; private set;  }
 
     public IReadOnlyCollection<FiscalDocumentItem> Items => _items;
 
-    protected FiscalDocument(AccessKey accessKey, int number, int series, DateTime issueDate)
+    protected FiscalDocument(AccessKey accessKey, int number, int series, DateTime issueDate, TaxRegime taxRegime)
     {
         if (number <= 0)
             throw new DomainException("O número do documento fiscal deve ser maior que zero.");
@@ -44,6 +47,7 @@ public abstract class FiscalDocument
         DiscountAmount = Money.Zero;
         TotalAmount = Money.Zero;
         Taxes = new TaxSummary();
+        TaxRegime = taxRegime;
     }
 
     public void AddItem(FiscalDocumentItem item)

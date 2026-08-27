@@ -13,7 +13,7 @@ namespace FiscalZen.Domain.FiscalDocuments.Entities
 
         public AccessKey ReferencedAccessKey { get; }
 
-        public ReturnNFe(AccessKey accessKey, AccessKey referencedAccessKey, int number, int series, DateTime issueDate) : base(accessKey, number, series, issueDate)
+        public ReturnNFe(AccessKey accessKey, AccessKey referencedAccessKey, int number, int series, DateTime issueDate, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime)
         {
             ReferencedAccessKey = referencedAccessKey ?? throw new DomainException("A chave de acesso do documento fiscal referenciado não foi informada.");
         }

@@ -51,7 +51,8 @@ public class CreditNFeTaxAssessmentRuleTests
             124,
             1,
             new DateTime(2026, 8, 25),
-            NFeCreditType.ValueReduction
+            NFeCreditType.ValueReduction,
+            TaxRegime.LucroReal
         );
     }
 
@@ -61,7 +62,8 @@ public class CreditNFeTaxAssessmentRuleTests
             new AccessKey("35260812345678000190550010000012341000012345"),
             124,
             1,
-            new DateTime(2026, 8, 25)
+            new DateTime(2026, 8, 25),
+            TaxRegime.LucroReal
         );
     }
 }

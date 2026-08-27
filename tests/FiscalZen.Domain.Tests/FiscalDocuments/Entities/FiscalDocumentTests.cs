@@ -1,5 +1,6 @@
 ﻿using FiscalZen.Domain.Common.Exceptions;
 using FiscalZen.Domain.FiscalDocuments.Entities;
+using FiscalZen.Domain.FiscalDocuments.Enums;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
 namespace FiscalZen.Domain.Tests.FiscalDocuments.Entities;
@@ -23,21 +24,21 @@ public class FiscalDocumentTests
     [Test(Description = "Não deve permitir número do documento fiscal igual ou menor que zero")]
     public void Should_Throw_When_Document_Number_Is_Invalid()
     {
-        var exception = Assert.Throws<DomainException>(() => new TestFiscalDocument(CreateAccessKey(), 0, 1, DateTime.Now));
+        var exception = Assert.Throws<DomainException>(() => new TestFiscalDocument(CreateAccessKey(), 0, 1, DateTime.Now, TaxRegime.LucroReal));
         Assert.That(exception!.Message, Is.EqualTo("O número do documento fiscal deve ser maior que zero."));
     }
 
     [Test(Description = "Não deve permitir série do documento fiscal menor que zero")]
     public void Should_Throw_When_Document_Series_Is_Negative()
     {
-        var exception = Assert.Throws<DomainException>(() => new TestFiscalDocument(CreateAccessKey(), 1, -1, DateTime.Now));
+        var exception = Assert.Throws<DomainException>(() => new TestFiscalDocument(CreateAccessKey(), 1, -1, DateTime.Now, TaxRegime.LucroReal));
         Assert.That(exception!.Message, Is.EqualTo("A série do documento fiscal não pode ser menor que zero."));
     }
 
     [Test(Description = "Não deve permitir documento fiscal sem chave de acesso")]
     public void Should_Throw_When_AccessKey_Is_Null()
     {
-        var exception = Assert.Throws<DomainException>(() => new TestFiscalDocument(null!, 1, 1, DateTime.Now));
+        var exception = Assert.Throws<DomainException>(() => new TestFiscalDocument(null!, 1, 1, DateTime.Now, TaxRegime.LucroReal));
         Assert.That(exception!.Message, Is.EqualTo("A chave de acesso não foi informada."));
     }
 
@@ -187,7 +188,7 @@ public class FiscalDocumentTests
 
     private static TestFiscalDocument CreateDocument()
     {
-        return new TestFiscalDocument(CreateAccessKey(), 123, 1, new DateTime(2026, 8, 23));
+        return new TestFiscalDocument(CreateAccessKey(), 123, 1, new DateTime(2026, 8, 23), TaxRegime.LucroReal);
     }
 
     private static AccessKey CreateAccessKey()
@@ -210,7 +211,7 @@ public class FiscalDocumentTests
 
     private sealed class TestFiscalDocument : FiscalDocument
     {
-        public TestFiscalDocument(AccessKey accessKey, int number, int series, DateTime issueDate) : base(accessKey, number, series, issueDate)
+        public TestFiscalDocument(AccessKey accessKey, int number, int series, DateTime issueDate, TaxRegime taxRegime) : base(accessKey, number, series, issueDate, taxRegime)
         {
         }
     }

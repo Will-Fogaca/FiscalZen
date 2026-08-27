@@ -1,4 +1,5 @@
 ﻿using FiscalZen.Domain.FiscalDocuments.Entities;
+using FiscalZen.Domain.FiscalDocuments.Enums;
 using FiscalZen.Domain.FiscalDocuments.Services.TaxAssessment;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
@@ -66,7 +67,8 @@ public class ReturnNFeTaxAssessmentRuleTests
             new AccessKey("35260812345678000190550010000056781000056789"),
             124,
             1,
-            new DateTime(2026, 8, 25));
+            new DateTime(2026, 8, 25),
+            TaxRegime.LucroReal);
     }
 
 }
