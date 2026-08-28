@@ -2,12 +2,12 @@
 
 ## Visão geral
 
-O FiscalZen utiliza uma arquitetura baseada em princípios de **Clean Architecture** e **Domain-Driven Design**.
+O FiscalZen utiliza uma arquitetura baseada em princípios de **Clean Architecture**, **Domain-Driven Design** e **SOLID**.
 
-O objetivo principal é manter as regras de domínio independentes de tecnologias externas como:
+O objetivo é manter as regras de negócio independentes de tecnologias externas como:
 
 * banco de dados;
-* leitura de XML;
+* XML;
 * APIs;
 * frameworks;
 * interface gráfica;
@@ -32,26 +32,67 @@ O projeto:
 FiscalZen.Domain
 ```
 
-contém os conceitos e regras de negócio.
+contém os conceitos, comportamentos e regras do domínio.
 
 O Domain não deve depender de:
 
+* Infrastructure;
+* API;
 * Entity Framework;
 * banco de dados;
 * XML;
-* APIs externas;
-* interface do usuário.
+* frameworks externos de persistência.
 
-Exemplos de objetos pertencentes ao Domain:
+Principais conceitos:
 
 ```text
 FiscalDocument
-NFe
-NFCe
+Nfe
+Nfce
 FiscalDocumentItem
 AccessKey
 Money
+Ncm
+Cfop
+TaxSummary
+TaxRegime
 ```
+
+### Aggregate
+
+`FiscalDocument` representa a raiz do agregado de documentos fiscais.
+
+```text
+FiscalDocument ← Aggregate Root
+│
+└── FiscalDocumentItem
+```
+
+A raiz controla as alterações realizadas no agregado.
+
+Exemplo:
+
+```text
+FiscalDocument.AddItem(...)
+```
+
+em vez de permitir alteração direta da coleção de itens.
+
+A existência de um Aggregate não define a estrutura física do banco de dados.
+
+Um agregado pode ser persistido através de múltiplas tabelas.
+
+Exemplo:
+
+```text
+FiscalDocuments
+       1
+       │
+       N
+FiscalDocumentItems
+```
+
+Mesmo existindo duas tabelas, o acesso de domínio ocorre através de `FiscalDocument`.
 
 ## Application
 
@@ -61,31 +102,27 @@ O projeto:
 FiscalZen.Application
 ```
 
-é responsável pelos casos de uso da aplicação.
+contém os casos de uso e contratos necessários para execução da aplicação.
 
-Exemplos:
+Exemplos atuais:
 
 ```text
-ImportFiscalDocuments
-GetRevenueReport
-GetTaxesReport
-GetFreightReport
+ImportFiscalDocumentsUseCase
+IXmlFiscalDocumentParser
 ```
 
-A Application coordena o fluxo da aplicação, mas não deve concentrar regras pertencentes ao domínio.
+A Application coordena os fluxos, mas não deve implementar regras pertencentes ao domínio.
 
 Exemplo:
 
 ```text
-Usuário solicita importação
-        ↓
-Application recebe comando
-        ↓
-Obtém os dados do XML
-        ↓
-Cria objetos do Domain
-        ↓
-Solicita persistência
+XML
+ ↓
+Application
+ ↓
+IXmlFiscalDocumentParser
+ ↓
+FiscalDocument
 ```
 
 ## Infrastructure
@@ -98,30 +135,30 @@ FiscalZen.Infrastructure
 
 contém implementações relacionadas a tecnologias externas.
 
-Exemplos:
-
-* leitura de arquivos XML;
-* desserialização de NF-e;
-* desserialização de NFC-e;
-* banco de dados;
-* Entity Framework;
-* implementação dos repositórios.
-
-Estrutura esperada:
+Atualmente:
 
 ```text
 FiscalZen.Infrastructure
-│
-├── Persistence
-│
 └── Xml
-    ├── NFeXmlParser.cs
-    └── NFCeXmlParser.cs
+    └── NFeXmlParser.cs
 ```
 
-O Domain não deve conhecer `NFeXmlParser` ou `NFCeXmlParser`.
+O `NFeXmlParser` implementa o contrato definido pela Application:
 
-O XML é apenas uma forma de entrada de dados.
+```text
+IXmlFiscalDocumentParser
+        ▲
+        │
+NFeXmlParser
+```
+
+A Infrastructure também será responsável por:
+
+* banco de dados;
+* Entity Framework;
+* repositories;
+* persistência;
+* integrações externas.
 
 ## API
 
@@ -131,79 +168,172 @@ O projeto:
 FiscalZen.Api
 ```
 
-é responsável por disponibilizar as funcionalidades da aplicação para o cliente.
+é o ponto de entrada da aplicação.
 
-Suas responsabilidades podem incluir:
+Suas responsabilidades incluem:
 
 * endpoints;
+* upload de arquivos;
 * autenticação;
-* validação básica da requisição;
-* upload dos XMLs;
-* chamadas para a camada Application.
+* validações de entrada;
+* execução dos casos de uso;
+* configuração de Dependency Injection.
 
-A API não deve conter regras de negócio.
+A API funciona também como **Composition Root**, conectando abstrações às implementações.
+
+Exemplo:
+
+```text
+IXmlFiscalDocumentParser
+        ↓
+NFeXmlParser
+```
 
 ## Dependências
 
-As dependências devem seguir o sentido das camadas internas.
+As dependências seguem a direção das camadas internas.
 
 ```text
-              ┌──────────────┐
-              │     API      │
-              └──────┬───────┘
-                     │
-                     ▼
-             ┌───────────────┐
-             │  Application  │
-             └───────┬───────┘
-                     │
-                     ▼
-             ┌───────────────┐
-             │    Domain     │
-             └───────────────┘
+Domain
+  ↑
+  │
+Application
+  ↑
+  │
+Infrastructure
+
+Api
+├── Application
+├── Infrastructure
+└── Domain
 ```
 
-A Infrastructure implementa recursos necessários pelas demais camadas:
+De forma simplificada:
 
 ```text
+Domain
+↑
+Application
+↑
 Infrastructure
-      │
-      ├── Persistence
-      ├── XML
-      └── integrações externas
+↑
+Api
+```
+
+A API pode referenciar Infrastructure para registrar implementações concretas através de Dependency Injection.
+
+O sentido inverso não é permitido.
+
+Exemplos inválidos:
+
+```text
+Domain → Infrastructure
+Domain → Api
+Application → Api
+Infrastructure → Api
 ```
 
 ## Fluxo de importação
 
-O fluxo inicial esperado é:
-
 ```text
 Usuário
    ↓
-Seleciona arquivos XML
-   ↓
-Seleciona NF-e ou NFC-e
-   ↓
 API
    ↓
-Application
+ImportFiscalDocumentsUseCase
    ↓
-XML Parser
+IXmlFiscalDocumentParser
+   ↓
+NFeXmlParser
    ↓
 FiscalDocument
    ↓
-NFe / NFCe
-   ↓
-Repository
-   ↓
-Database
+Domain
 ```
 
-## Fluxo de relatórios
+O parser é responsável somente por interpretar a estrutura do XML e construir objetos válidos do domínio.
 
-Os dashboards possuem características principalmente de leitura.
+## Parser
 
-Por esse motivo, consultas de relatório não precisam obrigatoriamente carregar Aggregates completos do domínio.
+O XML pertence à Infrastructure.
+
+```text
+XML
+ ↓
+NFeXmlParser
+ ↓
+FiscalDocument
+```
+
+Atualmente o parser extrai:
+
+* identificação;
+* finalidade;
+* regime tributário disponível no XML;
+* valores totais;
+* itens;
+* NCM;
+* CFOP;
+* tributos do documento;
+* tributos dos itens.
+
+O Domain não possui dependência de `System.Xml.Linq`.
+
+## Persistência
+
+Repositories devem trabalhar principalmente com **Aggregate Roots**.
+
+Exemplo:
+
+```text
+IFiscalDocumentRepository
+        ↓
+FiscalDocument
+```
+
+Não é necessário criar repositories independentes para objetos internos do agregado.
+
+Exemplo:
+
+```text
+FiscalDocumentItemRepository
+```
+
+não será necessário enquanto `FiscalDocumentItem` permanecer pertencente exclusivamente ao agregado `FiscalDocument`.
+
+No banco, entretanto, itens podem possuir sua própria tabela.
+
+## Apuração tributária
+
+A interpretação fiscal não é responsabilidade do parser.
+
+```text
+XML
+ ↓
+TaxSummary
+ ↓
+Domain Rules
+ ↓
+Tax Assessment
+```
+
+O parser preserva os valores encontrados no XML.
+
+As regras de apuração determinam como esses valores impactam determinada análise.
+
+Isso mantém separadas as responsabilidades de:
+
+```text
+Leitura
+≠
+Regra fiscal
+```
+
+## Relatórios
+
+Relatórios e dashboards possuem características principalmente de leitura.
+
+Por isso, consultas analíticas não precisam obrigatoriamente reconstruir Aggregates completos.
 
 Um fluxo possível é:
 
@@ -219,7 +349,7 @@ API
 Dashboard
 ```
 
-Isso evita carregar milhares de documentos e itens apenas para executar operações como:
+Isso permite operações otimizadas como:
 
 ```text
 SUM
@@ -228,44 +358,37 @@ AVG
 GROUP BY
 ```
 
+sem carregar milhares de objetos do domínio.
+
 ## Organização por domínio
 
-Inicialmente será utilizado um único projeto:
+Inicialmente existe um único projeto:
 
 ```text
 FiscalZen.Domain
 ```
 
-Dentro dele, os conceitos serão separados por módulos:
+organizado por módulos.
 
 ```text
 FiscalZen.Domain
-├── FiscalDocuments
-└── Common
+├── Common
+└── FiscalDocuments
 ```
 
-Caso o sistema cresça e novos Bounded Contexts sejam identificados, esses módulos poderão ser separados posteriormente.
-
-Exemplo:
-
-```text
-FiscalZen.FiscalDocuments.Domain
-FiscalZen.Reporting.Domain
-FiscalZen.Importing.Domain
-```
-
-A separação física ocorrerá somente quando houver necessidade real.
+Novos Bounded Contexts somente devem ser extraídos quando existirem diferenças reais de linguagem, regras ou responsabilidade.
 
 ## Princípios adotados
-
-O projeto seguirá inicialmente os seguintes princípios:
 
 * Domain não conhece Infrastructure.
 * Domain não conhece XML.
 * Domain não conhece banco de dados.
-* As regras do domínio ficam próximas dos objetos responsáveis por elas.
-* Value Objects são utilizados para conceitos com significado e regras próprias.
-* O código utiliza nomes em inglês.
-* Mensagens apresentadas pelo domínio utilizam PT-BR.
-* Siglas fiscais brasileiras mantêm seus nomes oficiais.
-* Novos Bounded Contexts são criados apenas quando houver necessidade de domínio.
+* Application coordena casos de uso.
+* Infrastructure implementa detalhes técnicos.
+* API atua como ponto de entrada e Composition Root.
+* Repositories trabalham com Aggregate Roots.
+* Value Objects representam conceitos com regras próprias.
+* Estados inválidos devem ser evitados pelo modelo.
+* Dados originais do XML devem ser preservados.
+* Leitura de XML e interpretação fiscal são responsabilidades distintas.
+* Novos Bounded Contexts não devem ser criados antecipadamente.
