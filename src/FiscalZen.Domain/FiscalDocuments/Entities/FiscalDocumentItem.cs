@@ -11,7 +11,7 @@ public sealed class FiscalDocumentItem
 
     public string Description { get; }
 
-    public string? NCM { get; }
+    public Ncm Ncm { get; }
 
     public Cfop Cfop { get; }
 
@@ -23,7 +23,7 @@ public sealed class FiscalDocumentItem
 
     public TaxSummary Taxes { get; private set; }
 
-    public FiscalDocumentItem(int number, string productCode, string description, string? ncm, Cfop cfop, decimal quantity, Money unitPrice, Money totalAmount)
+    public FiscalDocumentItem(int number, string productCode, string description, Ncm ncm, Cfop cfop, decimal quantity, Money unitPrice, Money totalAmount)
     {
         if (number <= 0)
             throw new DomainException("O número do item deve ser maior que zero.");
@@ -37,16 +37,14 @@ public sealed class FiscalDocumentItem
         if (quantity <= 0)
             throw new DomainException("A quantidade do item deve ser maior que zero.");
 
-        UnitPrice = unitPrice ?? throw new DomainException("O valor unitário do item não foi informado.");
-
-        TotalAmount = totalAmount ?? throw new DomainException("O valor total do item não foi informado.");
-
+        Ncm = ncm ?? throw new DomainException("O NCM não foi informado.");
         Cfop = cfop ?? throw new DomainException("O CFOP não foi informado.");
+        UnitPrice = unitPrice ?? throw new DomainException("O valor unitário do item não foi informado.");
+        TotalAmount = totalAmount ?? throw new DomainException("O valor total do item não foi informado.");
 
         Number = number;
         ProductCode = productCode;
         Description = description;
-        NCM = ncm;
         Quantity = quantity;
         Taxes = new TaxSummary();
     }

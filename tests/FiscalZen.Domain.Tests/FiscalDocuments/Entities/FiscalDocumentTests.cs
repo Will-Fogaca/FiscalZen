@@ -119,38 +119,6 @@ public class FiscalDocumentTests
         Assert.That(exception!.Message, Is.EqualTo("O valor do desconto não pode ser maior que o valor do documento fiscal."));
     }
 
-    [Test(Description = "Deve recalcular o valor total ao definir o valor dos produtos")]
-    public void Should_Recalculate_Total_When_Products_Amount_Is_Set()
-    {
-        var document = CreateDocument();
-
-        document.SetProductsAmount(new Money(100));
-
-        Assert.That(document.TotalAmount.Value, Is.EqualTo(100));
-    }
-
-    [Test(Description = "Deve recalcular o valor total ao definir o frete")]
-    public void Should_Recalculate_Total_When_Freight_Amount_Is_Set()
-    {
-        var document = CreateDocument();
-
-        document.SetProductsAmount(new Money(100));
-        document.SetFreightAmount(new Money(20));
-
-        Assert.That(document.TotalAmount.Value, Is.EqualTo(120));
-    }
-
-    [Test(Description = "Deve recalcular o valor total ao definir o desconto")]
-    public void Should_Recalculate_Total_When_Discount_Amount_Is_Set()
-    {
-        var document = CreateDocument();
-
-        document.SetProductsAmount(new Money(100));
-        document.SetFreightAmount(new Money(20));
-        document.SetDiscountAmount(new Money(30));
-
-        Assert.That(document.TotalAmount.Value, Is.EqualTo(90));
-    }
 
     [Test(Description = "Deve adicionar um item ao documento fiscal")]
     public void Should_Add_Item_To_Fiscal_Document()
@@ -202,7 +170,7 @@ public class FiscalDocumentTests
             number,
             "PROD001",
             "Produto teste",
-            "12345678",
+            new Ncm("12345678"),
             new Cfop("5102"),
             1,
             new Money(100),

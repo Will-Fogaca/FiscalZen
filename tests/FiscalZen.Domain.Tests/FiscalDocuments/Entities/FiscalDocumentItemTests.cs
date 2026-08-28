@@ -1,6 +1,5 @@
 ﻿using FiscalZen.Domain.Common.Exceptions;
 using FiscalZen.Domain.FiscalDocuments.Entities;
-using FiscalZen.Domain.FiscalDocuments.Enums;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
 namespace FiscalZen.Domain.Tests.FiscalDocuments.Entities;
@@ -17,7 +16,7 @@ public class FiscalDocumentItemTests
             Assert.That(item.Number, Is.EqualTo(1));
             Assert.That(item.ProductCode, Is.EqualTo("PROD001"));
             Assert.That(item.Description, Is.EqualTo("Produto teste"));
-            Assert.That(item.NCM, Is.EqualTo("12345678"));
+            Assert.That(item.Ncm, Is.EqualTo(new Ncm("12345678")));
             Assert.That(item.Cfop.Value, Is.EqualTo("5102"));
             Assert.That(item.Quantity, Is.EqualTo(2));
             Assert.That(item.UnitPrice.Value, Is.EqualTo(50));
@@ -33,7 +32,7 @@ public class FiscalDocumentItemTests
                 0,
                 "PROD001",
                 "Produto teste",
-                "12345678",
+                new Ncm("12345678"),
                 new Cfop("5102"),
                 2,
                 new Money(50),
@@ -50,7 +49,7 @@ public class FiscalDocumentItemTests
                 1,
                 "",
                 "Produto teste",
-                "12345678",
+                new Ncm("12345678"),
                 new Cfop("5102"),
                 2,
                 new Money(50),
@@ -67,7 +66,7 @@ public class FiscalDocumentItemTests
                 1,
                 "PROD001",
                 "",
-                "12345678",
+                new Ncm("12345678"),
                 new Cfop("5102"),
                 2,
                 new Money(50),
@@ -76,15 +75,32 @@ public class FiscalDocumentItemTests
         Assert.That(exception!.Message, Is.EqualTo("A descrição do produto não foi informada."));
     }
 
-    [Test(Description = "Não deve permitir CFOP nulo")]
-    public void Should_Throw_When_CFOP_Is_Null()
+    [Test(Description = "Não deve permitir NCM nulo")]
+    public void Should_Throw_When_Ncm_Is_Null()
     {
         var exception = Assert.Throws<DomainException>(() =>
             new FiscalDocumentItem(
                 1,
                 "PROD001",
                 "Produto teste",
-                "12345678",
+                null!,
+                new Cfop("5102"),
+                2,
+                new Money(50),
+                new Money(100)));
+
+        Assert.That(exception!.Message, Is.EqualTo("O NCM não foi informado."));
+    }
+
+    [Test(Description = "Não deve permitir CFOP nulo")]
+    public void Should_Throw_When_Cfop_Is_Null()
+    {
+        var exception = Assert.Throws<DomainException>(() =>
+            new FiscalDocumentItem(
+                1,
+                "PROD001",
+                "Produto teste",
+                new Ncm("12345678"),
                 null!,
                 2,
                 new Money(50),
@@ -101,7 +117,7 @@ public class FiscalDocumentItemTests
                 1,
                 "PROD001",
                 "Produto teste",
-                "12345678",
+                new Ncm("12345678"),
                 new Cfop("5102"),
                 0,
                 new Money(50),
@@ -118,7 +134,7 @@ public class FiscalDocumentItemTests
                 1,
                 "PROD001",
                 "Produto teste",
-                "12345678",
+                new Ncm("12345678"),
                 new Cfop("5102"),
                 2,
                 null!,
@@ -135,7 +151,7 @@ public class FiscalDocumentItemTests
                 1,
                 "PROD001",
                 "Produto teste",
-                "12345678",
+                new Ncm("12345678"),
                 new Cfop("5102"),
                 2,
                 new Money(50),
@@ -196,7 +212,7 @@ public class FiscalDocumentItemTests
             1,
             "PROD001",
             "Produto teste",
-            "12345678",
+            new Ncm("12345678"),
             new Cfop("5102"),
             2,
             new Money(50),

@@ -7,7 +7,9 @@ namespace FiscalZen.Domain.FiscalDocuments.Enums
     public enum TaxRegime
     {
         SimplesNacional = 1,
-        LucroPresumido = 2,
-        LucroReal = 3
+        RegimeNormal = 2,
+        LucroPresumido = 3,
+        LucroReal = 4
     }
 }
+

@@ -1,10 +1,11 @@
-﻿using FiscalZen.Domain.Common.Exceptions;
+﻿using FiscalZen.Domain.Common.Abstractions;
+using FiscalZen.Domain.Common.Exceptions;
 using FiscalZen.Domain.FiscalDocuments.Enums;
 using FiscalZen.Domain.FiscalDocuments.ValueObjects;
 
 namespace FiscalZen.Domain.FiscalDocuments.Entities;
 
-public abstract class FiscalDocument
+public abstract class FiscalDocument : IAggregateRoot
 {
     private readonly List<FiscalDocumentItem> _items = [];
 
@@ -24,7 +25,7 @@ public abstract class FiscalDocument
 
     public Money TotalAmount { get; private set; }
 
-    public TaxRegime TaxRegime { get; private set; }
+    public TaxRegime TaxRegime { get; }
 
     public TaxSummary Taxes { get; private set;  }
 
@@ -66,8 +67,6 @@ public abstract class FiscalDocument
         EnsureNonNegative(amount, "O valor dos produtos");
 
         ProductsAmount = amount;
-
-        RecalculateTotal();
     }
 
     public void SetFreightAmount(Money amount)
@@ -75,8 +74,6 @@ public abstract class FiscalDocument
         EnsureNonNegative(amount, "O valor do frete");
 
         FreightAmount = amount;
-
-        RecalculateTotal();
     }
 
     public void SetDiscountAmount(Money amount)
@@ -87,15 +84,9 @@ public abstract class FiscalDocument
             throw new DomainException("O valor do desconto não pode ser maior que o valor do documento fiscal.");
 
         DiscountAmount = amount;
-
-        RecalculateTotal();
     }
 
-    protected void RecalculateTotal()
-    {
-        TotalAmount = ProductsAmount + FreightAmount - DiscountAmount;
-    }
-
+  
     private static void EnsureNonNegative(Money amount, string field)
     {
         if (amount is null)
@@ -109,4 +100,12 @@ public abstract class FiscalDocument
     {
         Taxes = taxes ?? throw new DomainException("Os tributos do documento fiscal não foram informados.");
     }
+
+    public void SetTotalAmount(Money amount)
+    {
+        EnsureNonNegative(amount, "O valor total");
+
+        TotalAmount = amount;
+    }
+
 }
