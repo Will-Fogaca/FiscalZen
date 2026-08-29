@@ -1,0 +1,14 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: fiscalzen-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "FiscalZen@123"
+    ports:
+      - "1433:1433"
+    volumes:
+      - fiscalzen_sqlserver_data:/var/opt/mssql
+
+volumes:
+  fiscalzen_sqlserver_data:

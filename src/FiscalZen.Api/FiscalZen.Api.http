@@ -1,0 +1,6 @@
+@FiscalZen.Api_HostAddress = http://localhost:5272
+
+GET {{FiscalZen.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

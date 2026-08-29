@@ -5,6 +5,7 @@ namespace FiscalZen.Domain.FiscalDocuments.Entities;
 
 public sealed class FiscalDocumentItem
 {
+    public Guid Id { get; private set; }
     public int Number { get; }
 
     public string ProductCode { get; }

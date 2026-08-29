@@ -28,6 +28,8 @@ public sealed class NFeXmlParser : IXmlFiscalDocumentParser
         if (ide is null)
             throw new InvalidOperationException("A identificação da NF-e não foi encontrada.");
 
+        ValidateModel(ide, ns);
+
         var accessKey = GetAccessKey(infNFe);
         var number = GetInt(ide, ns + "nNF");
         var series = GetInt(ide, ns + "serie");
@@ -46,12 +48,19 @@ public sealed class NFeXmlParser : IXmlFiscalDocumentParser
             ns);
 
         SetTotals(fiscalDocument, infNFe, ns);
-
         SetDocumentTaxes(fiscalDocument, infNFe, ns);
-
         SetItems(fiscalDocument, infNFe, ns);
 
         return fiscalDocument;
+    }
+
+    private static void ValidateModel(XElement ide, XNamespace ns)
+    {
+        var model = GetInt(ide, ns + "mod");
+
+        if (model != 55)
+            throw new InvalidOperationException(
+                $"O modelo {model} não é suportado pelo parser de NF-e.");
     }
 
     private static AccessKey GetAccessKey(XElement infNFe)
@@ -319,7 +328,15 @@ public sealed class NFeXmlParser : IXmlFiscalDocumentParser
         item.SetTaxes(taxes);
     }
 
-    private static FiscalDocument CreateNFe(AccessKey accessKey, int number, int series, DateTime issueDate, NfePurpose purpose, TaxRegime taxRegime, XElement ide, XNamespace ns)
+    private static FiscalDocument CreateNFe(
+        AccessKey accessKey,
+        int number,
+        int series,
+        DateTime issueDate,
+        NfePurpose purpose,
+        TaxRegime taxRegime,
+        XElement ide,
+        XNamespace ns)
     {
         return purpose switch
         {
@@ -344,7 +361,8 @@ public sealed class NFeXmlParser : IXmlFiscalDocumentParser
                 issueDate,
                 taxRegime),
 
-            _ => throw new NotSupportedException($"A finalidade {purpose} não é suportada.")
+            _ => throw new NotSupportedException(
+                $"A finalidade {purpose} não é suportada.")
         };
     }
 }

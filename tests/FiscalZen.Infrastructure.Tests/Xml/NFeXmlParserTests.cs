@@ -7,6 +7,28 @@ namespace FiscalZen.Infrastructure.Tests.Xml
 {
     public class NFeXmlParserTests
     {
+        [Test(Description = "Deve permitir NF-e modelo 55")]
+        public void Should_Parse_NFe_Model_55()
+        {
+            var xml = CreateValidXml(3);
+
+            var parser = new NFeXmlParser();
+
+            var result = parser.Parse(xml);
+
+            Assert.That(result, Is.TypeOf<NormalNfe>());
+        }
+
+        [Test(Description = "Não deve permitir NFC-e modelo 65 no parser de NF-e")]
+        public void Should_Throw_When_Model_Is_Not_NFe()
+        {
+            var xml = CreateValidXml(3, 65);
+
+            var parser = new NFeXmlParser();
+
+            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
+        }
+
         [Test(Description = "Deve identificar NF-e do Simples Nacional pelo CRT")]
         public void Should_Parse_Simples_Nacional_Tax_Regime()
         {
@@ -75,218 +97,26 @@ namespace FiscalZen.Infrastructure.Tests.Xml
             });
         }
 
-        [Test(Description = "Não deve permitir NF-e sem dados do emitente")]
-        public void Should_Throw_When_Issuer_Is_Not_Found()
+        [Test(Description = "Deve iniciar os tributos do item zerados quando o XML não informar impostos")]
+        public void Should_Set_Zero_Taxes_When_Item_Has_No_Tax_Element()
         {
-            var xml = """
-                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
-                    <NFe>
-                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
-                            <ide>
-                                <serie>1</serie>
-                                <nNF>123</nNF>
-                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
-                                <finNFe>1</finNFe>
-                            </ide>
-                        </infNFe>
-                    </NFe>
-                </nfeProc>
-                """;
+            var xml = CreateValidXml(3);
 
             var parser = new NFeXmlParser();
 
-            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
-        }
+            var result = parser.Parse(xml);
 
-        [Test(Description = "Não deve permitir NF-e sem CRT do emitente")]
-        public void Should_Throw_When_CRT_Is_Not_Found()
-        {
-            var xml = """
-                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
-                    <NFe>
-                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
-                            <ide>
-                                <serie>1</serie>
-                                <nNF>123</nNF>
-                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
-                                <finNFe>1</finNFe>
-                            </ide>
-                            <emit>
-                            </emit>
-                        </infNFe>
-                    </NFe>
-                </nfeProc>
-                """;
+            var item = result.Items.First();
 
-            var parser = new NFeXmlParser();
-
-            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
-        }
-
-        [Test(Description = "Não deve permitir CRT não suportado")]
-        public void Should_Throw_When_CRT_Is_Not_Supported()
-        {
-            var xml = CreateValidXml(99);
-
-            var parser = new NFeXmlParser();
-
-            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
-        }
-
-        [Test(Description = "Não deve permitir NF-e sem totais")]
-        public void Should_Throw_When_Totals_Are_Not_Found()
-        {
-            var xml = """
-                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
-                    <NFe>
-                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
-                            <ide>
-                                <serie>1</serie>
-                                <nNF>123</nNF>
-                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
-                                <finNFe>1</finNFe>
-                            </ide>
-                            <emit>
-                                <CRT>3</CRT>
-                            </emit>
-                        </infNFe>
-                    </NFe>
-                </nfeProc>
-                """;
-
-            var parser = new NFeXmlParser();
-
-            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
-        }
-
-        [Test(Description = "Não deve permitir item com número inválido")]
-        public void Should_Throw_When_Item_Number_Is_Invalid()
-        {
-            var xml = """
-                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
-                    <NFe>
-                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
-                            <ide>
-                                <serie>1</serie>
-                                <nNF>123</nNF>
-                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
-                                <finNFe>1</finNFe>
-                            </ide>
-
-                            <emit>
-                                <CRT>3</CRT>
-                            </emit>
-
-                            <det nItem="ABC">
-                                <prod>
-                                    <cProd>PROD001</cProd>
-                                    <xProd>Produto teste</xProd>
-                                    <NCM>12345678</NCM>
-                                    <CFOP>5102</CFOP>
-                                    <qCom>2.0000</qCom>
-                                    <vUnCom>50.00</vUnCom>
-                                    <vProd>100.00</vProd>
-                                </prod>
-                            </det>
-
-                            <total>
-                                <ICMSTot>
-                                    <vProd>100.00</vProd>
-                                    <vFrete>10.00</vFrete>
-                                    <vDesc>5.00</vDesc>
-                                    <vNF>105.00</vNF>
-                                </ICMSTot>
-                            </total>
-                        </infNFe>
-                    </NFe>
-                </nfeProc>
-                """;
-
-            var parser = new NFeXmlParser();
-
-            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
-        }
-
-        [Test(Description = "Não deve permitir item sem dados do produto")]
-        public void Should_Throw_When_Product_Is_Not_Found()
-        {
-            var xml = """
-                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
-                    <NFe>
-                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
-                            <ide>
-                                <serie>1</serie>
-                                <nNF>123</nNF>
-                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
-                                <finNFe>1</finNFe>
-                            </ide>
-
-                            <emit>
-                                <CRT>3</CRT>
-                            </emit>
-
-                            <det nItem="1">
-                            </det>
-
-                            <total>
-                                <ICMSTot>
-                                    <vProd>100.00</vProd>
-                                    <vFrete>10.00</vFrete>
-                                    <vDesc>5.00</vDesc>
-                                    <vNF>105.00</vNF>
-                                </ICMSTot>
-                            </total>
-                        </infNFe>
-                    </NFe>
-                </nfeProc>
-                """;
-
-            var parser = new NFeXmlParser();
-
-            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
-        }
-
-        private static string CreateValidXml(int crt)
-        {
-            return $$"""
-                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
-                    <NFe>
-                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
-                            <ide>
-                                <serie>1</serie>
-                                <nNF>123</nNF>
-                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
-                                <finNFe>1</finNFe>
-                            </ide>
-
-                            <emit>
-                                <CRT>{{crt}}</CRT>
-                            </emit>
-
-                            <det nItem="1">
-                                <prod>
-                                    <cProd>PROD001</cProd>
-                                    <xProd>Produto teste</xProd>
-                                    <NCM>12345678</NCM>
-                                    <CFOP>5102</CFOP>
-                                    <qCom>2.0000</qCom>
-                                    <vUnCom>50.00</vUnCom>
-                                    <vProd>100.00</vProd>
-                                </prod>
-                            </det>
-
-                            <total>
-                                <ICMSTot>
-                                    <vProd>100.00</vProd>
-                                    <vFrete>10.00</vFrete>
-                                    <vDesc>5.00</vDesc>
-                                    <vNF>105.00</vNF>
-                                </ICMSTot>
-                            </total>
-                        </infNFe>
-                    </NFe>
-                </nfeProc>
-                """;
+            Assert.Multiple(() =>
+            {
+                Assert.That(item.Taxes.ICMS, Is.EqualTo(Money.Zero));
+                Assert.That(item.Taxes.IPI, Is.EqualTo(Money.Zero));
+                Assert.That(item.Taxes.PIS, Is.EqualTo(Money.Zero));
+                Assert.That(item.Taxes.COFINS, Is.EqualTo(Money.Zero));
+                Assert.That(item.Taxes.IBS, Is.EqualTo(Money.Zero));
+                Assert.That(item.Taxes.CBS, Is.EqualTo(Money.Zero));
+            });
         }
 
         [Test(Description = "Deve converter uma NF-e completa com itens e tributos")]
@@ -297,6 +127,7 @@ namespace FiscalZen.Infrastructure.Tests.Xml
                     <NFe>
                         <infNFe Id="NFe35260812345678000190550010000012341000012345">
                             <ide>
+                                <mod>55</mod>
                                 <serie>1</serie>
                                 <nNF>123</nNF>
                                 <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
@@ -409,7 +240,6 @@ namespace FiscalZen.Infrastructure.Tests.Xml
                                     <vFrete>20.00</vFrete>
                                     <vDesc>10.00</vDesc>
                                     <vNF>310.00</vNF>
-
                                     <vICMS>54.00</vICMS>
                                     <vIPI>30.00</vIPI>
                                     <vPIS>4.95</vPIS>
@@ -502,28 +332,227 @@ namespace FiscalZen.Infrastructure.Tests.Xml
                 Assert.That(secondItem.Taxes.CBS.Value, Is.EqualTo(16m));
             });
         }
-   
 
-    [Test(Description = "Deve iniciar os tributos do item zerados quando o XML não informar impostos")]
-        public void Should_Set_Zero_Taxes_When_Item_Has_No_Tax_Element()
+        [Test(Description = "Não deve permitir NF-e sem dados do emitente")]
+        public void Should_Throw_When_Issuer_Is_Not_Found()
         {
-            var xml = CreateValidXml(3);
+            var xml = """
+                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
+                    <NFe>
+                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
+                            <ide>
+                                <mod>55</mod>
+                                <serie>1</serie>
+                                <nNF>123</nNF>
+                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
+                                <finNFe>1</finNFe>
+                            </ide>
+                        </infNFe>
+                    </NFe>
+                </nfeProc>
+                """;
 
             var parser = new NFeXmlParser();
 
-            var result = parser.Parse(xml);
+            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
+        }
 
-            var item = result.Items.First();
+        [Test(Description = "Não deve permitir NF-e sem CRT do emitente")]
+        public void Should_Throw_When_CRT_Is_Not_Found()
+        {
+            var xml = """
+                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
+                    <NFe>
+                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
+                            <ide>
+                                <mod>55</mod>
+                                <serie>1</serie>
+                                <nNF>123</nNF>
+                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
+                                <finNFe>1</finNFe>
+                            </ide>
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(item.Taxes.ICMS, Is.EqualTo(Money.Zero));
-                Assert.That(item.Taxes.IPI, Is.EqualTo(Money.Zero));
-                Assert.That(item.Taxes.PIS, Is.EqualTo(Money.Zero));
-                Assert.That(item.Taxes.COFINS, Is.EqualTo(Money.Zero));
-                Assert.That(item.Taxes.IBS, Is.EqualTo(Money.Zero));
-                Assert.That(item.Taxes.CBS, Is.EqualTo(Money.Zero));
-            });
+                            <emit>
+                            </emit>
+                        </infNFe>
+                    </NFe>
+                </nfeProc>
+                """;
+
+            var parser = new NFeXmlParser();
+
+            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
+        }
+
+        [Test(Description = "Não deve permitir CRT não suportado")]
+        public void Should_Throw_When_CRT_Is_Not_Supported()
+        {
+            var xml = CreateValidXml(99);
+
+            var parser = new NFeXmlParser();
+
+            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
+        }
+
+        [Test(Description = "Não deve permitir NF-e sem totais")]
+        public void Should_Throw_When_Totals_Are_Not_Found()
+        {
+            var xml = """
+                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
+                    <NFe>
+                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
+                            <ide>
+                                <mod>55</mod>
+                                <serie>1</serie>
+                                <nNF>123</nNF>
+                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
+                                <finNFe>1</finNFe>
+                            </ide>
+
+                            <emit>
+                                <CRT>3</CRT>
+                            </emit>
+                        </infNFe>
+                    </NFe>
+                </nfeProc>
+                """;
+
+            var parser = new NFeXmlParser();
+
+            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
+        }
+
+        [Test(Description = "Não deve permitir item com número inválido")]
+        public void Should_Throw_When_Item_Number_Is_Invalid()
+        {
+            var xml = """
+                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
+                    <NFe>
+                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
+                            <ide>
+                                <mod>55</mod>
+                                <serie>1</serie>
+                                <nNF>123</nNF>
+                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
+                                <finNFe>1</finNFe>
+                            </ide>
+
+                            <emit>
+                                <CRT>3</CRT>
+                            </emit>
+
+                            <det nItem="ABC">
+                                <prod>
+                                    <cProd>PROD001</cProd>
+                                    <xProd>Produto teste</xProd>
+                                    <NCM>12345678</NCM>
+                                    <CFOP>5102</CFOP>
+                                    <qCom>2.0000</qCom>
+                                    <vUnCom>50.00</vUnCom>
+                                    <vProd>100.00</vProd>
+                                </prod>
+                            </det>
+
+                            <total>
+                                <ICMSTot>
+                                    <vProd>100.00</vProd>
+                                    <vFrete>10.00</vFrete>
+                                    <vDesc>5.00</vDesc>
+                                    <vNF>105.00</vNF>
+                                </ICMSTot>
+                            </total>
+                        </infNFe>
+                    </NFe>
+                </nfeProc>
+                """;
+
+            var parser = new NFeXmlParser();
+
+            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
+        }
+
+        [Test(Description = "Não deve permitir item sem dados do produto")]
+        public void Should_Throw_When_Product_Is_Not_Found()
+        {
+            var xml = """
+                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
+                    <NFe>
+                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
+                            <ide>
+                                <mod>55</mod>
+                                <serie>1</serie>
+                                <nNF>123</nNF>
+                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
+                                <finNFe>1</finNFe>
+                            </ide>
+
+                            <emit>
+                                <CRT>3</CRT>
+                            </emit>
+
+                            <det nItem="1">
+                            </det>
+
+                            <total>
+                                <ICMSTot>
+                                    <vProd>100.00</vProd>
+                                    <vFrete>10.00</vFrete>
+                                    <vDesc>5.00</vDesc>
+                                    <vNF>105.00</vNF>
+                                </ICMSTot>
+                            </total>
+                        </infNFe>
+                    </NFe>
+                </nfeProc>
+                """;
+
+            var parser = new NFeXmlParser();
+
+            Assert.Throws<InvalidOperationException>(() => parser.Parse(xml));
+        }
+
+        private static string CreateValidXml(int crt, int model = 55)
+        {
+            return $$"""
+                <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
+                    <NFe>
+                        <infNFe Id="NFe35260812345678000190550010000012341000012345">
+                            <ide>
+                                <mod>{{model}}</mod>
+                                <serie>1</serie>
+                                <nNF>123</nNF>
+                                <dhEmi>2026-08-26T20:00:00-03:00</dhEmi>
+                                <finNFe>1</finNFe>
+                            </ide>
+
+                            <emit>
+                                <CRT>{{crt}}</CRT>
+                            </emit>
+
+                            <det nItem="1">
+                                <prod>
+                                    <cProd>PROD001</cProd>
+                                    <xProd>Produto teste</xProd>
+                                    <NCM>12345678</NCM>
+                                    <CFOP>5102</CFOP>
+                                    <qCom>2.0000</qCom>
+                                    <vUnCom>50.00</vUnCom>
+                                    <vProd>100.00</vProd>
+                                </prod>
+                            </det>
+
+                            <total>
+                                <ICMSTot>
+                                    <vProd>100.00</vProd>
+                                    <vFrete>10.00</vFrete>
+                                    <vDesc>5.00</vDesc>
+                                    <vNF>105.00</vNF>
+                                </ICMSTot>
+                            </total>
+                        </infNFe>
+                    </NFe>
+                </nfeProc>
+                """;
         }
     }
 }

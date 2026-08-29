@@ -9,29 +9,30 @@ public abstract class FiscalDocument : IAggregateRoot
 {
     private readonly List<FiscalDocumentItem> _items = [];
 
+    public Guid Id { get; private set; }
+    public Guid AccountId { get; private set; }
+
     public AccessKey AccessKey { get; }
-
     public int Number { get; }
-
     public int Series { get; }
-
     public DateTime IssueDate { get; }
 
     public Money ProductsAmount { get; private set; }
-
     public Money FreightAmount { get; private set; }
-
     public Money DiscountAmount { get; private set; }
-
     public Money TotalAmount { get; private set; }
 
     public TaxRegime TaxRegime { get; }
-
-    public TaxSummary Taxes { get; private set;  }
+    public TaxSummary Taxes { get; private set; }
 
     public IReadOnlyCollection<FiscalDocumentItem> Items => _items;
 
-    protected FiscalDocument(AccessKey accessKey, int number, int series, DateTime issueDate, TaxRegime taxRegime)
+    protected FiscalDocument(
+        AccessKey accessKey,
+        int number,
+        int series,
+        DateTime issueDate,
+        TaxRegime taxRegime)
     {
         if (number <= 0)
             throw new DomainException("O número do documento fiscal deve ser maior que zero.");
@@ -39,16 +40,27 @@ public abstract class FiscalDocument : IAggregateRoot
         if (series < 0)
             throw new DomainException("A série do documento fiscal não pode ser menor que zero.");
 
+        Id = Guid.NewGuid();
+
         AccessKey = accessKey ?? throw new DomainException("A chave de acesso não foi informada.");
         Number = number;
         Series = series;
         IssueDate = issueDate;
+        TaxRegime = taxRegime;
+
         ProductsAmount = Money.Zero;
         FreightAmount = Money.Zero;
         DiscountAmount = Money.Zero;
         TotalAmount = Money.Zero;
         Taxes = new TaxSummary();
-        TaxRegime = taxRegime;
+    }
+
+    public void AssignAccount(Guid accountId)
+    {
+        if (accountId == Guid.Empty)
+            throw new DomainException("A conta não foi informada.");
+
+        AccountId = accountId;
     }
 
     public void AddItem(FiscalDocumentItem item)
@@ -86,7 +98,18 @@ public abstract class FiscalDocument : IAggregateRoot
         DiscountAmount = amount;
     }
 
-  
+    public void SetTotalAmount(Money amount)
+    {
+        EnsureNonNegative(amount, "O valor total");
+
+        TotalAmount = amount;
+    }
+
+    public void SetTaxes(TaxSummary taxes)
+    {
+        Taxes = taxes ?? throw new DomainException("Os tributos do documento fiscal não foram informados.");
+    }
+
     private static void EnsureNonNegative(Money amount, string field)
     {
         if (amount is null)
@@ -95,17 +118,4 @@ public abstract class FiscalDocument : IAggregateRoot
         if (amount.Value < 0)
             throw new DomainException($"{field} não pode ser menor que zero.");
     }
-
-    public void SetTaxes(TaxSummary taxes)
-    {
-        Taxes = taxes ?? throw new DomainException("Os tributos do documento fiscal não foram informados.");
-    }
-
-    public void SetTotalAmount(Money amount)
-    {
-        EnsureNonNegative(amount, "O valor total");
-
-        TotalAmount = amount;
-    }
-
 }
