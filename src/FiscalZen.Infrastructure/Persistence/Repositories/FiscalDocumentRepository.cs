@@ -9,9 +9,9 @@ public sealed class FiscalDocumentRepository : Repository<FiscalDocument>, IFisc
 {
     public FiscalDocumentRepository(FiscalZenDbContext context) : base(context) {}
 
-    public async Task<FiscalDocument?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<FiscalDocument?> GetByIdAsync(Guid id, Guid accountId, CancellationToken cancellationToken = default)
     {
-        return await DbSet.AsNoTracking().Include(x => x.Items).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        return await DbSet.AsNoTracking().Include(x => x.Items).FirstOrDefaultAsync(x => x.Id == id && x.AccountId == accountId, cancellationToken);
     }
 
     public async Task<FiscalDocument?> GetByAccessKeyAsync(Guid accountId, AccessKey accessKey, CancellationToken cancellationToken = default)

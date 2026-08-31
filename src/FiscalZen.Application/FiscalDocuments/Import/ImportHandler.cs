@@ -3,20 +3,20 @@ using FiscalZen.Domain.Common.Repositories;
 
 namespace FiscalZen.Application.FiscalDocuments.ImportFiscalDocuments;
 
-public sealed class ImportFiscalDocumentsHandler
+public sealed class ImportHandler
 {
     private readonly IXmlFiscalDocumentParser _parser;
     private readonly IFiscalDocumentRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ImportFiscalDocumentsHandler(IXmlFiscalDocumentParser parser, IFiscalDocumentRepository repository, IUnitOfWork unitOfWork)
+    public ImportHandler(IXmlFiscalDocumentParser parser, IFiscalDocumentRepository repository, IUnitOfWork unitOfWork)
     {
         _parser = parser;
         _repository = repository;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ImportFiscalDocumentsResponse> HandleAsync(ImportFiscalDocumentsCommand command, CancellationToken cancellationToken = default)
+    public async Task<ImportResponse> HandleAsync(ImportCommand command, CancellationToken cancellationToken = default)
     {
         var documentIds = new List<Guid>();
 
@@ -48,6 +48,6 @@ public sealed class ImportFiscalDocumentsHandler
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new ImportFiscalDocumentsResponse(importedCount, ignoredCount, documentIds);
+        return new ImportResponse(importedCount, ignoredCount, documentIds);
     }
 }

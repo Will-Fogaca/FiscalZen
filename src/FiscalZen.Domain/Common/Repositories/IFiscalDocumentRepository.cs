@@ -5,7 +5,7 @@ namespace FiscalZen.Domain.Common.Repositories;
 
 public interface IFiscalDocumentRepository : IRepository<FiscalDocument>
 {
-    Task<FiscalDocument?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<FiscalDocument?> GetByIdAsync(Guid id, Guid accountId, CancellationToken cancellationToken = default);
 
     Task<FiscalDocument?> GetByAccessKeyAsync(Guid accountId, AccessKey accessKey, CancellationToken cancellationToken = default);
 
