@@ -7,20 +7,36 @@ namespace FiscalZen.Infrastructure.Persistence.Repositories;
 
 public sealed class FiscalDocumentRepository : Repository<FiscalDocument>, IFiscalDocumentRepository
 {
-    public FiscalDocumentRepository(FiscalZenDbContext context) : base(context) {}
+    public FiscalDocumentRepository(FiscalZenDbContext context) : base(context) { }
 
-    public async Task<FiscalDocument?> GetByIdAsync(Guid id, Guid accountId, CancellationToken cancellationToken = default)
+    public async Task<FiscalDocument?> GetByIdAsync(Guid id, Guid userId, CancellationToken cancellationToken = default)
     {
-        return await DbSet.AsNoTracking().Include(x => x.Items).FirstOrDefaultAsync(x => x.Id == id && x.AccountId == accountId, cancellationToken);
+        return await DbSet.AsNoTracking().Include(x => x.Items).FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId, cancellationToken);
     }
 
-    public async Task<FiscalDocument?> GetByAccessKeyAsync(Guid accountId, AccessKey accessKey, CancellationToken cancellationToken = default)
+    public async Task<FiscalDocument?> GetByAccessKeyAsync(Guid userId, AccessKey accessKey, CancellationToken cancellationToken = default)
     {
-        return await DbSet.AsNoTracking().Include(x => x.Items).FirstOrDefaultAsync(x => x.AccountId == accountId && x.AccessKey == accessKey, cancellationToken);
+        return await DbSet.AsNoTracking().Include(x => x.Items).FirstOrDefaultAsync(x => x.UserId == userId && x.AccessKey == accessKey, cancellationToken);
     }
 
-    public async Task<bool> ExistsByAccessKeyAsync(Guid accountId, AccessKey accessKey, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsByAccessKeyAsync(Guid userId, AccessKey accessKey, CancellationToken cancellationToken = default)
     {
-        return await DbSet.AnyAsync(x => x.AccountId == accountId && x.AccessKey == accessKey, cancellationToken);
+        return await DbSet.AnyAsync(x => x.UserId == userId && x.AccessKey == accessKey, cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<FiscalDocument>> ListAsync(Guid userId, int page, int pageSize, CancellationToken cancellationToken = default)
+    {
+        return await DbSet
+            .AsNoTracking()
+            .Where(x => x.UserId == userId)
+            .OrderByDescending(x => x.IssueDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<int> CountAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return await DbSet.CountAsync(x => x.UserId == userId, cancellationToken);
     }
 }

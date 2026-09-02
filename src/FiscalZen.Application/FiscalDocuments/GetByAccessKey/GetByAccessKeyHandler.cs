@@ -16,9 +16,9 @@ public sealed class GetByAccessKeyHandler
     }
 
 
-    public async Task<FiscalDocumentResponse?> HandleAsync(GetByAccessKeyCommand command, CancellationToken cancellationToken)
+    public async Task<FiscalDocumentResponse?> HandleAsync(GetByAccessKeyQuery command, CancellationToken cancellationToken)
     {
-        var document = await _repository.GetByAccessKeyAsync(command.AccountId, command.AccessKey, cancellationToken);
+        var document = await _repository.GetByAccessKeyAsync(command.UserId, command.AccessKey, cancellationToken);
 
         if (document is null)
             return null;

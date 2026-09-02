@@ -1,3 +1,3 @@
 ﻿namespace FiscalZen.Application.FiscalDocuments.ImportFiscalDocuments;
 
-public sealed record ImportCommand(Guid AccountId, IEnumerable<string> Xmls);
+public sealed record ImportCommand(Guid UserId, IEnumerable<string> Xmls);

@@ -27,10 +27,10 @@ public sealed class ImportHandler
         {
             var document = _parser.Parse(xml);
 
-            document.AssignAccount(command.AccountId);
+            document.AssignUser(command.UserId);
 
             var exists = await _repository.ExistsByAccessKeyAsync(
-                command.AccountId,
+                command.UserId,
                 document.AccessKey,
                 cancellationToken);
 

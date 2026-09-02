@@ -10,7 +10,7 @@ public abstract class FiscalDocument : IAggregateRoot
     private readonly List<FiscalDocumentItem> _items = [];
 
     public Guid Id { get; private set; }
-    public Guid AccountId { get; private set; }
+    public Guid UserId { get; private set; }
 
     public AccessKey AccessKey { get; }
     public int Number { get; }
@@ -55,12 +55,12 @@ public abstract class FiscalDocument : IAggregateRoot
         Taxes = new TaxSummary();
     }
 
-    public void AssignAccount(Guid accountId)
+    public void AssignUser(Guid userId)
     {
-        if (accountId == Guid.Empty)
-            throw new DomainException("A conta não foi informada.");
+        if (userId == Guid.Empty)
+            throw new DomainException("O usuário não foi informado.");
 
-        AccountId = accountId;
+        UserId = userId;
     }
 
     public void AddItem(FiscalDocumentItem item)

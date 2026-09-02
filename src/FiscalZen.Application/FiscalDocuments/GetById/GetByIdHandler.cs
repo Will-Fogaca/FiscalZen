@@ -12,9 +12,9 @@ public sealed class GetByIdHandler
         _repository = repository;
     }
 
-    public async Task<FiscalDocumentResponse?> HandleAsync(GetByIdCommand command, CancellationToken cancellationToken = default)
+    public async Task<FiscalDocumentResponse?> HandleAsync(GetByIdQuery command, CancellationToken cancellationToken = default)
     {
-        var document = await _repository.GetByIdAsync(command.Id, command.AccountId, cancellationToken);
+        var document = await _repository.GetByIdAsync(command.Id, command.UserId, cancellationToken);
 
         if (document is null)
             return null;

@@ -2,8 +2,8 @@
 
 namespace FiscalZen.Application.FiscalDocuments.GetByAccessKey;
 
-public sealed record GetByAccessKeyCommand
+public sealed record GetByAccessKeyQuery
 (
     AccessKey AccessKey,
-    Guid AccountId
+    Guid UserId
 );

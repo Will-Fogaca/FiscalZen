@@ -18,8 +18,8 @@ public sealed class FiscalDocumentConfiguration : IEntityTypeConfiguration<Fisca
             .ValueGeneratedNever()
             .IsRequired();
 
-        builder.Property(x => x.AccountId)
-            .HasColumnName("AccountId")
+        builder.Property(x => x.UserId)
+            .HasColumnName("UserId")
             .IsRequired();
 
         builder.Property(x => x.AccessKey)
@@ -28,7 +28,7 @@ public sealed class FiscalDocumentConfiguration : IEntityTypeConfiguration<Fisca
             .HasMaxLength(44)
             .IsRequired();
 
-        builder.HasIndex(x => new { x.AccountId, x.AccessKey })
+        builder.HasIndex(x => new { x.UserId, x.AccessKey })
             .IsUnique();
 
         builder.Property(x => x.Number)

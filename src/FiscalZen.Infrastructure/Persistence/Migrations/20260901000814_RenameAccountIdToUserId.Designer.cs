@@ -4,6 +4,7 @@ using FiscalZen.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiscalZen.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(FiscalZenDbContext))]
-    partial class FiscalZenDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260901000814_RenameAccountIdToUserId")]
+    partial class RenameAccountIdToUserId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,7 +81,7 @@ namespace FiscalZen.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("UserId");
+                        .HasColumnName("AccountId");
 
                     b.HasKey("Id");
 

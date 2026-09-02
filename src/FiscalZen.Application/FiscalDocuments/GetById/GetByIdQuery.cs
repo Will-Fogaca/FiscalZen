@@ -4,4 +4,4 @@ using System.Text;
 
 namespace FiscalZen.Application.FiscalDocuments.GetById;
 
-public sealed record GetByIdCommand(Guid Id, Guid AccountId);
+public sealed record GetByIdQuery(Guid Id, Guid UserId);
